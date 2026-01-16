@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schema Form Demo</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+    .schema-selector {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .schema-selector button {
+      padding: 0.75rem 1.25rem;
+      border: 2px solid #ddd;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .schema-selector button:hover {
+      border-color: #0066cc;
+    }
+    .schema-selector button.active {
+      border-color: #0066cc;
+      background: #0066cc;
+      color: white;
+    }
+    .demo-section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+    }
+    .demo-section h2 {
+      margin-top: 0;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    .demo-section p {
+      color: #666;
+      font-size: 14px;
+      margin: 0.5rem 0 1rem;
+    }
+    .output {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow: auto;
+      max-height: 400px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
+    .actions {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .actions button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #0066cc;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .actions button:hover {
+      background: #0055aa;
+    }
+    .actions button.secondary {
+      background: #666;
+    }
+    .actions button.secondary:hover {
+      background: #555;
+    }
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 1rem;
+    }
+    .tabs button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: #666;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .tabs button:hover {
+      color: #333;
+    }
+    .tabs button.active {
+      color: #0066cc;
+      border-bottom-color: #0066cc;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .complexity-badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+    }
+    .complexity-simple { background: #d4edda; color: #155724; }
+    .complexity-moderate { background: #fff3cd; color: #856404; }
+    .complexity-complex { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <h1>Schema Form Component</h1>
+  <p class="subtitle">A tosijs web component that generates forms from JSON Schema</p>
+
+  <div class="schema-selector">
+    <button data-schema="contact" class="active">
+      Contact Form
+      <span class="complexity-badge complexity-simple">Simple</span>
+    </button>
+    <button data-schema="blogPost">
+      Blog Post
+      <span class="complexity-badge complexity-moderate">Moderate</span>
+    </button>
+    <button data-schema="order">
+      E-Commerce Order
+      <span class="complexity-badge complexity-complex">Complex</span>
+    </button>
+  </div>
+
+  <div class="demo-section">
+    <h2 id="formTitle">Contact Form</h2>
+    <p id="formDescription">Basic form with primitive types and validation</p>
+    <schema-form id="schemaForm"></schema-form>
+    <div class="actions">
+      <button id="getData">Get Form Data</button>
+      <button id="setData" class="secondary">Load Sample Data</button>
+      <button id="clearData" class="secondary">Clear</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <div class="tabs">
+      <button class="active" data-tab="output">Form Data</button>
+      <button data-tab="schema">Schema Definition</button>
+    </div>
+    <div id="outputTab" class="tab-content active">
+      <div class="output" id="output">Click "Get Form Data" to see current values</div>
+    </div>
+    <div id="schemaTab" class="tab-content">
+      <div class="output" id="schemaOutput"></div>
+    </div>
+  </div>
+
+  <script type="module" src="./dist/main.js"></script>
+</body>
+</html>

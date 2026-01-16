@@ -1,0 +1,16 @@
+{
+  "name": "quick-test",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "tosijs": "^1.0.10",
+    "tosijs-schema": "^1.3.0"
+  }
+}
