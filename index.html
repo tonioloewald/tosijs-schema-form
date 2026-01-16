@@ -137,6 +137,33 @@
     .complexity-simple { background: #d4edda; color: #155724; }
     .complexity-moderate { background: #fff3cd; color: #856404; }
     .complexity-complex { background: #f8d7da; color: #721c24; }
+    
+    .validation-message {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      font-size: 14px;
+      display: none;
+    }
+    .validation-message.show {
+      display: block;
+    }
+    .validation-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .validation-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .actions button#submitForm {
+      background: #28a745;
+    }
+    .actions button#submitForm:hover {
+      background: #218838;
+    }
   </style>
 </head>
 <body>
@@ -156,6 +183,10 @@
       E-Commerce Order
       <span class="complexity-badge complexity-complex">Complex</span>
     </button>
+    <button data-schema="contentBuilder">
+      Content Builder
+      <span class="complexity-badge complexity-complex">Union Types</span>
+    </button>
   </div>
 
   <div class="demo-section">
@@ -163,10 +194,13 @@
     <p id="formDescription">Basic form with primitive types and validation</p>
     <schema-form id="schemaForm"></schema-form>
     <div class="actions">
-      <button id="getData">Get Form Data</button>
-      <button id="setData" class="secondary">Load Sample Data</button>
+      <button id="submitForm">Submit</button>
+      <button id="validateForm" class="secondary">Validate</button>
+      <button id="getData" class="secondary">Get Data (skip validation)</button>
+      <button id="setData" class="secondary">Load Sample</button>
       <button id="clearData" class="secondary">Clear</button>
     </div>
+    <div id="validationMessage" class="validation-message"></div>
   </div>
 
   <div class="demo-section">

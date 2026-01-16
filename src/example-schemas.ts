@@ -482,6 +482,191 @@ export const orderSchema: JSONSchema = {
   }
 }
 
+// Content Builder - showcases union types with array variant picker
+export const contentBuilderSchema: JSONSchema = {
+  type: 'object',
+  title: 'Content Builder',
+  description: 'Build a page with mixed content blocks',
+  properties: {
+    title: {
+      type: 'string',
+      title: 'Page Title',
+      minLength: 1,
+      maxLength: 100
+    },
+    slug: {
+      type: 'string',
+      title: 'URL Slug',
+      pattern: '^[a-z0-9-]+$'
+    },
+    published: {
+      type: 'boolean',
+      title: 'Published',
+      default: false
+    },
+    seoScore: {
+      type: 'integer',
+      title: 'SEO Score',
+      description: 'Calculated SEO score (0-100)',
+      minimum: 0,
+      maximum: 100
+    },
+    readingTime: {
+      type: 'number',
+      title: 'Estimated Reading Time (minutes)',
+      minimum: 0.5,
+      maximum: 60
+    },
+    blocks: {
+      type: 'array',
+      title: 'Content Blocks',
+      description: 'Add different types of content blocks',
+      items: {
+        anyOf: [
+          {
+            type: 'object',
+            title: 'Text Block',
+            properties: {
+              blockType: { type: 'string', const: 'text' },
+              heading: { type: 'string', title: 'Heading' },
+              content: { type: 'string', title: 'Content', maxLength: 5000 },
+              alignment: { 
+                type: 'string', 
+                title: 'Alignment',
+                enum: ['left', 'center', 'right', 'justify']
+              }
+            }
+          },
+          {
+            type: 'object',
+            title: 'Image Block',
+            properties: {
+              blockType: { type: 'string', const: 'image' },
+              url: { type: 'string', title: 'Image URL', format: 'uri' },
+              alt: { type: 'string', title: 'Alt Text' },
+              caption: { type: 'string', title: 'Caption' },
+              width: { type: 'integer', title: 'Width %', minimum: 10, maximum: 100 }
+            }
+          },
+          {
+            type: 'object',
+            title: 'Video Block',
+            properties: {
+              blockType: { type: 'string', const: 'video' },
+              platform: {
+                type: 'string',
+                title: 'Platform',
+                enum: ['youtube', 'vimeo', 'custom']
+              },
+              videoId: { type: 'string', title: 'Video ID' },
+              autoplay: { type: 'boolean', title: 'Autoplay', default: false }
+            }
+          },
+          {
+            type: 'object',
+            title: 'Code Block',
+            properties: {
+              blockType: { type: 'string', const: 'code' },
+              language: {
+                type: 'string',
+                title: 'Language',
+                enum: ['javascript', 'typescript', 'python', 'rust', 'go', 'html', 'css', 'json', 'other']
+              },
+              code: { type: 'string', title: 'Code' },
+              showLineNumbers: { type: 'boolean', title: 'Show Line Numbers', default: true }
+            }
+          },
+          {
+            type: 'object',
+            title: 'Quote Block',
+            properties: {
+              blockType: { type: 'string', const: 'quote' },
+              text: { type: 'string', title: 'Quote Text' },
+              author: { type: 'string', title: 'Author' },
+              source: { type: 'string', title: 'Source' }
+            }
+          }
+        ]
+      }
+    },
+    settings: {
+      type: 'object',
+      title: 'Page Settings',
+      properties: {
+        template: {
+          anyOf: [
+            { const: 'default', title: 'Default Template' },
+            { const: 'full-width', title: 'Full Width' },
+            { const: 'sidebar-left', title: 'Sidebar Left' },
+            { const: 'sidebar-right', title: 'Sidebar Right' },
+            { const: 'landing', title: 'Landing Page' }
+          ]
+        },
+        headerStyle: {
+          oneOf: [
+            {
+              type: 'object',
+              title: 'Simple Header',
+              properties: {
+                style: { type: 'string', const: 'simple' },
+                showTitle: { type: 'boolean', title: 'Show Title', default: true }
+              }
+            },
+            {
+              type: 'object',
+              title: 'Hero Header',
+              properties: {
+                style: { type: 'string', const: 'hero' },
+                backgroundImage: { type: 'string', title: 'Background Image URL', format: 'uri' },
+                overlayOpacity: { type: 'integer', title: 'Overlay Opacity %', minimum: 0, maximum: 100 },
+                height: { type: 'integer', title: 'Height (px)', minimum: 200, maximum: 800 }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+
+export const contentBuilderSampleData = {
+  title: 'Getting Started Guide',
+  slug: 'getting-started',
+  published: true,
+  seoScore: 78,
+  readingTime: 5.5,
+  blocks: [
+    {
+      blockType: 'text',
+      heading: 'Welcome',
+      content: 'This is an introduction to our platform...',
+      alignment: 'left'
+    },
+    {
+      blockType: 'image',
+      url: 'https://example.com/hero.jpg',
+      alt: 'Platform dashboard screenshot',
+      caption: 'The main dashboard view',
+      width: 100
+    },
+    {
+      blockType: 'code',
+      language: 'javascript',
+      code: 'const hello = "world";\nconsole.log(hello);',
+      showLineNumbers: true
+    }
+  ],
+  settings: {
+    template: 'default',
+    headerStyle: {
+      style: 'hero',
+      backgroundImage: 'https://example.com/header-bg.jpg',
+      overlayOpacity: 40,
+      height: 400
+    }
+  }
+}
+
 // Sample data for each schema
 export const contactSampleData = {
   name: 'Jane Doe',
