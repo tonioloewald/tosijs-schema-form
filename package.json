@@ -1,16 +1,30 @@
 {
-  "name": "quick-test",
-  "module": "index.ts",
+  "name": "tosijs-schema-form",
+  "version": "1.0.0",
+  "description": "A tosijs web component that generates forms from JSON Schema",
+  "module": "src/schema-form.ts",
+  "main": "dist/schema-form.js",
   "type": "module",
-  "private": true,
+  "scripts": {
+    "build": "bun build ./src/schema-form.ts --outdir ./dist",
+    "dev": "bun run serve-static.ts",
+    "demo": "bun build ./src/main.ts --outdir ./dist && bun run serve-static.ts"
+  },
+  "keywords": [
+    "tosijs",
+    "json-schema",
+    "web-components",
+    "form",
+    "ui"
+  ],
+  "author": "tonioloewald",
+  "license": "MIT",
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5",
+    "tosijs": "^1.0.0"
   },
-  "dependencies": {
-    "tosijs": "^1.0.10",
-    "tosijs-schema": "^1.3.0"
-  }
+  "dependencies": {}
 }
