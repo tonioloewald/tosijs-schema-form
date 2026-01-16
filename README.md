@@ -1,115 +1,231 @@
-# tosijs-schema-form
+# schema-form
 
-A [tosijs](https://tosijs.net) web component that generates forms from JSON Schema.
+A [tosijs](https://github.com/tonioloewald/xinjs) web component that generates forms from JSON Schema.
+
+## Features
+
+- **JSON Schema support**: Generates forms from standard JSON Schema definitions
+- **Nested structures**: Objects, arrays, arrays of objects with nested arrays
+- **Union types**: `anyOf`/`oneOf` with variant picker for polymorphic arrays
+- **Range sliders**: Numbers with both `minimum` and `maximum` get slider + number input
+- **Native validation**: Uses HTML5 validation attributes (required, min, max, pattern, etc.)
+- **Theming**: CSS custom properties with fallbacks via `varDefault`
+- **Data round-trip**: Form data accurately reflects schema structure
 
 ## Installation
 
 ```bash
-bun add tosijs-schema-form tosijs
+npm install tosijs-schema-form
 ```
 
-## Usage
+## Basic Usage
 
-```typescript
+```html
+<schema-form id="myForm"></schema-form>
+
+<script type="module">
 import { schemaForm } from 'tosijs-schema-form'
 
-// Wait for component to register
-await schemaForm
-
-// Use in HTML
-// <schema-form id="myForm"></schema-form>
+await schemaForm // wait for component registration
 
 const form = document.getElementById('myForm')
 
-// Set a JSON Schema
+// Set schema
 form.schema = {
   type: 'object',
-  required: ['name', 'email'],
   properties: {
     name: { type: 'string', title: 'Name' },
     email: { type: 'string', format: 'email', title: 'Email' },
-    age: { type: 'integer', minimum: 0 }
-  }
+    age: { type: 'integer', minimum: 0, maximum: 120, title: 'Age' }
+  },
+  required: ['name', 'email']
 }
 
 // Optionally set initial data
-form.data = { name: 'Jane', email: 'jane@example.com' }
+form.data = { name: 'Jane', email: 'jane@example.com', age: 30 }
 
 // Get current form data
 const data = form.getData()
-
-// Listen for changes
-form.addEventListener('schema-input', (e) => {
-  console.log('Form changed:', e.detail.data)
-})
-
-form.addEventListener('schema-submit', (e) => {
-  console.log('Form submitted:', e.detail.data)
-})
+</script>
 ```
-
-## Features
-
-- Renders forms from any JSON Schema
-- **Primitives**: string, number, integer, boolean
-- **String formats**: email, url, date, datetime-local, time, password
-- **Enums**: rendered as dropdowns
-- **anyOf**: const values rendered as dropdowns
-- **Nested objects**: rendered as fieldsets
-- **Arrays**: add/remove items with min/max constraints
-- Required field markers and descriptions
-- Reactive: setting `schema` or `data` triggers re-render
 
 ## Schema Support
 
-| Feature | Support |
-|---------|---------|
-| `type: string` | Text input (or textarea for maxLength > 200) |
-| `type: number` | Number input |
-| `type: integer` | Number input with step=1 |
-| `type: boolean` | Checkbox |
-| `type: object` | Nested fieldset |
-| `type: array` | List with add/remove buttons |
-| `enum` | Select dropdown |
-| `anyOf` (const) | Select dropdown |
-| `format: email` | Email input |
-| `format: url/uri` | URL input |
-| `format: date` | Date picker |
-| `format: date-time` | Datetime picker |
-| `format: time` | Time picker |
-| `format: password` | Password input |
-| `title` | Field label |
-| `description` | Help text |
-| `required` | Required marker (*) |
-| `minimum/maximum` | Number constraints |
-| `minLength/maxLength` | String constraints |
-| `pattern` | Regex validation |
-| `minItems/maxItems` | Array constraints |
-| `default` | Default values |
+### Basic Types
 
-## Styling
+```javascript
+// String
+{ type: 'string', title: 'Name', minLength: 1, maxLength: 100 }
 
-The component uses light DOM (no shadow DOM) with scoped CSS. Override styles using the `schema-form` tag selector:
+// Number with range slider (has both min and max)
+{ type: 'number', title: 'Score', minimum: 0, maximum: 100 }
+
+// Integer
+{ type: 'integer', title: 'Count' }
+
+// Boolean (renders as checkbox)
+{ type: 'boolean', title: 'Subscribe' }
+
+// Enum (renders as select)
+{ type: 'string', enum: ['draft', 'published', 'archived'], title: 'Status' }
+```
+
+### Objects
+
+```javascript
+{
+  type: 'object',
+  title: 'Author',
+  properties: {
+    name: { type: 'string' },
+    bio: { type: 'string' }
+  },
+  required: ['name']
+}
+```
+
+### Arrays
+
+```javascript
+// Array of strings
+{
+  type: 'array',
+  title: 'Tags',
+  items: { type: 'string' }
+}
+
+// Array of objects
+{
+  type: 'array',
+  title: 'Items',
+  items: {
+    type: 'object',
+    properties: {
+      name: { type: 'string' },
+      quantity: { type: 'integer' }
+    }
+  }
+}
+```
+
+### Union Types (anyOf/oneOf)
+
+```javascript
+// Simple union (renders as select)
+{
+  title: 'Priority',
+  anyOf: [
+    { const: 'low', title: 'Low' },
+    { const: 'medium', title: 'Medium' },
+    { const: 'high', title: 'High' }
+  ]
+}
+
+// Complex union (renders variant selector + fields)
+{
+  title: 'Header Style',
+  oneOf: [
+    {
+      type: 'object',
+      title: 'Simple',
+      properties: { text: { type: 'string' } }
+    },
+    {
+      type: 'object',
+      title: 'Hero',
+      properties: {
+        text: { type: 'string' },
+        backgroundImage: { type: 'string' }
+      }
+    }
+  ]
+}
+
+// Array with union items (variant picker dropdown)
+{
+  type: 'array',
+  title: 'Content Blocks',
+  items: {
+    anyOf: [
+      { type: 'object', title: 'Text Block', properties: { content: { type: 'string' } } },
+      { type: 'object', title: 'Image Block', properties: { url: { type: 'string' } } }
+    ]
+  }
+}
+```
+
+## Validation
+
+The component uses native HTML5 validation. To trigger validation:
+
+```javascript
+const formEl = document.querySelector('schema-form form')
+
+// Check validity
+if (formEl.checkValidity()) {
+  const data = form.getData()
+  // submit data
+} else {
+  formEl.reportValidity() // shows browser validation UI
+}
+```
+
+Supported validation attributes:
+- `required` (from schema's `required` array)
+- `minLength` / `maxLength` (strings)
+- `min` / `max` (numbers)
+- `pattern` (strings with `pattern` property)
+- `type="email"` (strings with `format: 'email'`)
+- `type="url"` (strings with `format: 'uri'`)
+
+## Events
+
+```javascript
+// Fires on any input change
+form.addEventListener('schema-input', (e) => {
+  console.log('Current data:', e.detail.data)
+})
+
+// Fires on form submit
+form.addEventListener('schema-submit', (e) => {
+  console.log('Submitted:', e.detail.data)
+})
+```
+
+## Theming
+
+The component uses CSS custom properties with fallbacks. Override globally or per-instance:
 
 ```css
-schema-form .schema-field {
-  margin-bottom: 2rem;
+/* Global theming */
+:root {
+  --spacing: 12px;
+  --color: #333;
+  --background: #fff;
+  --brand-color: #0066cc;
+  --border-color: #ccc;
+  --focus-color: #0066cc;
 }
 
-schema-form input {
-  border-color: blue;
+/* Per-instance */
+schema-form {
+  --sf-spacing: 16px;
+  --sf-brand-color: #ff6600;
 }
 ```
 
-## Development
+## Blueprint Usage
 
-```bash
-# Run demo
-bun run demo
+For advanced use cases, you can import the blueprint directly and use it with your own tosijs instance:
 
-# Build library
-bun run build
+```javascript
+import { schemaFormBlueprint } from 'tosijs-schema-form/blueprint'
+import { makeComponent } from 'tosijs'
+
+const schemaForm = makeComponent('schema-form', schemaFormBlueprint)
 ```
+
+This avoids bundling tosijs twice and ensures version compatibility.
 
 ## License
 
