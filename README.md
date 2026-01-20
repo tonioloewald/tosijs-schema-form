@@ -21,7 +21,7 @@ npm install tosijs-schema-form
 ## Basic Usage
 
 ```html
-<schema-form id="myForm"></schema-form>
+<tosi-schema-form id="myForm"></tosi-schema-form>
 
 <script type="module">
 import { schemaForm } from 'tosijs-schema-form'
@@ -159,7 +159,7 @@ const data = form.getData()
 The component uses native HTML5 validation. To trigger validation:
 
 ```javascript
-const formEl = document.querySelector('schema-form form')
+const formEl = document.querySelector('tosi-schema-form form')
 
 // Check validity
 if (formEl.checkValidity()) {
@@ -208,7 +208,7 @@ The component uses CSS custom properties with fallbacks. Override globally or pe
 }
 
 /* Per-instance */
-schema-form {
+tosi-schema-form {
   --sf-spacing: 16px;
   --sf-brand-color: #ff6600;
 }

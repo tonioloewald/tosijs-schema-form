@@ -4,13 +4,13 @@ import { schemaForm } from './schema-form'
 // Wait for queueRender to flush
 const nextTick = () => new Promise(resolve => setTimeout(resolve, 0))
 
-describe('schema-form', () => {
+describe('tosi-schema-form', () => {
   beforeAll(async () => {
     await schemaForm
   })
 
   test('renders empty state without schema', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     await nextTick()
     
@@ -20,7 +20,7 @@ describe('schema-form', () => {
   })
 
   test('renders fields from simple schema', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -43,7 +43,7 @@ describe('schema-form', () => {
   })
 
   test('data in = data out for simple schema', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -79,7 +79,7 @@ describe('schema-form', () => {
   })
 
   test('handles boolean fields', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -106,7 +106,7 @@ describe('schema-form', () => {
   })
 
   test('handles enum fields as select', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -136,7 +136,7 @@ describe('schema-form', () => {
   })
 
   test('handles nested objects', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -171,7 +171,7 @@ describe('schema-form', () => {
   })
 
   test('handles arrays', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -201,7 +201,7 @@ describe('schema-form', () => {
   })
 
   test('handles nested objects in arrays', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -243,7 +243,7 @@ describe('schema-form', () => {
   })
 
   test('add button adds array items', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -270,7 +270,7 @@ describe('schema-form', () => {
   })
 
   test('remove button removes array items', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -300,7 +300,7 @@ describe('schema-form', () => {
   })
 
   test('respects required fields', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -323,7 +323,7 @@ describe('schema-form', () => {
   })
 
   test('shows description text', async () => {
-    const form = document.createElement('schema-form') as any
+    const form = document.createElement('tosi-schema-form') as any
     document.body.appendChild(form)
     
     form.schema = {
@@ -345,7 +345,7 @@ describe('schema-form', () => {
   // Native validation tests
   describe('native validation', () => {
     test('applies minLength and maxLength constraints', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -364,7 +364,7 @@ describe('schema-form', () => {
     })
 
     test('applies min and max constraints for numbers (renders as range slider)', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -397,7 +397,7 @@ describe('schema-form', () => {
     })
 
     test('unbounded numbers render as number input', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -423,7 +423,7 @@ describe('schema-form', () => {
     })
 
     test('applies pattern constraint', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -441,7 +441,7 @@ describe('schema-form', () => {
     })
 
     test('uses correct input types for formats', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -466,7 +466,7 @@ describe('schema-form', () => {
     })
 
     test('checkValidity returns false for invalid required field', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -496,7 +496,7 @@ describe('schema-form', () => {
   // Complex data round-trip tests
   describe('complex data round-trip', () => {
     test('deeply nested objects preserve structure', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -540,7 +540,7 @@ describe('schema-form', () => {
     })
 
     test('arrays of objects with nested arrays', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -592,7 +592,7 @@ describe('schema-form', () => {
     })
 
     test('mixed types preserve correct type coercion', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -636,7 +636,7 @@ describe('schema-form', () => {
   // UI modification tests
   describe('UI modifications flow through', () => {
     test('text input changes are reflected in getData', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -657,7 +657,7 @@ describe('schema-form', () => {
     })
 
     test('number input changes preserve numeric type', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -683,7 +683,7 @@ describe('schema-form', () => {
     })
 
     test('checkbox toggle changes boolean value', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -708,7 +708,7 @@ describe('schema-form', () => {
     })
 
     test('select change updates enum value', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -732,7 +732,7 @@ describe('schema-form', () => {
     })
 
     test('nested object field modifications', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -782,7 +782,7 @@ describe('schema-form', () => {
     })
 
     test('array item modifications', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -807,7 +807,7 @@ describe('schema-form', () => {
     })
 
     test('array of objects modifications', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -848,7 +848,7 @@ describe('schema-form', () => {
     })
 
     test('adding array items and modifying them', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -898,7 +898,7 @@ describe('schema-form', () => {
     })
 
     test('removing array items reindexes correctly', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -933,7 +933,7 @@ describe('schema-form', () => {
   // Union type tests
   describe('union types (anyOf/oneOf)', () => {
     test('const-only anyOf renders as select', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -963,7 +963,7 @@ describe('schema-form', () => {
     })
 
     test('complex anyOf renders variant selector', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -1006,7 +1006,7 @@ describe('schema-form', () => {
     })
 
     test('oneOf works the same as anyOf', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -1031,7 +1031,7 @@ describe('schema-form', () => {
     })
 
     test('array with union items shows variant picker', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -1086,7 +1086,7 @@ describe('schema-form', () => {
     })
 
     test('variant detection works with discriminator properties', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -1133,7 +1133,7 @@ describe('schema-form', () => {
     })
 
     test('range + const sentinel union (confidence level pattern)', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       // Real-world pattern: confidence 0-100 OR special value 110 meaning "never confident enough"
@@ -1176,7 +1176,7 @@ describe('schema-form', () => {
     })
 
     test('switching to const variant returns const value', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -1217,7 +1217,7 @@ describe('schema-form', () => {
     })
 
     test('const variant detection with initial data', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -1247,7 +1247,7 @@ describe('schema-form', () => {
     })
 
     test('range variant detection with initial data', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {
@@ -1278,7 +1278,7 @@ describe('schema-form', () => {
     })
 
     test('standalone const schema renders correctly', async () => {
-      const form = document.createElement('schema-form') as any
+      const form = document.createElement('tosi-schema-form') as any
       document.body.appendChild(form)
       
       form.schema = {

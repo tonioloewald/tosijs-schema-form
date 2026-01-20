@@ -20,10 +20,10 @@ export { schemaFormBlueprint }
  * 
  * await schemaForm
  * 
- * const form = document.querySelector('schema-form')
+ * const form = document.querySelector('tosi-schema-form')
  * form.schema = { type: 'object', properties: { name: { type: 'string' } } }
  * form.data = { name: 'Jane' }
  * 
  * const data = form.getData()
  */
-export const schemaForm = makeComponent('schema-form', schemaFormBlueprint)
+export const schemaForm = makeComponent('tosi-schema-form', schemaFormBlueprint)

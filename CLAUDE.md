@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**tosijs-schema-form** is a web component library that generates HTML forms from JSON Schema definitions. Built on the tosijs reactive component framework with zero runtime dependencies.
+**tosijs-schema-form** is a web component (`<tosi-schema-form>`) that generates HTML forms from JSON Schema definitions. Built on the tosijs reactive component framework with zero runtime dependencies.
 
 ## Commands
 
@@ -12,8 +12,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 bun install          # Install dependencies
 bun test             # Run all tests
 bun test --watch     # Run tests in watch mode
+bun test src/schema-form.test.ts -- -t "test name"  # Run single test
 bun run build        # Build the library to dist/
-bun run dev          # Start dev server (serve-static.ts)
+bun run dev          # Start dev server at http://localhost:3456
 bun run demo         # Build demo and start dev server
 ```
 
@@ -52,10 +53,10 @@ For APIs, prefer Bun built-ins:
 
 ## Testing
 
-Tests use `bun:test` with `@happy-dom/global-registrator` for DOM simulation. Test file: `src/schema-form.test.ts`
+Tests use `bun:test` with `@happy-dom/global-registrator` for DOM simulation. Happy-dom is auto-loaded via `bunfig.toml` preload. Test file: `src/schema-form.test.ts`
 
 ```ts
-import { test, expect, beforeAll, afterEach } from 'bun:test'
+import { test, expect, beforeAll } from 'bun:test'
 ```
 
 ## JSON Schema Support
