@@ -67,6 +67,39 @@ Validation constraints: `required`, `minLength`, `maxLength`, `minimum`, `maximu
 
 Numbers with both `minimum` and `maximum` render as range slider + number input.
 
+## tosijs Component Patterns
+
+**Blueprint structure:** A blueprint is a function `(tag: string, factory: XinFactory) => ComponentSpec` that receives:
+- `Component` - base class to extend
+- `elements` - element factory (`{ div, input, button, ... }`)
+- `vars` - CSS variable references (`vars.sfSpacing` → `var(--sf-spacing)`)
+- `varDefault` - CSS variables with fallbacks (`varDefault.spacing('8px')` → `var(--spacing, 8px)`)
+
+**Component class pattern:**
+```ts
+class MyComponent extends Component<Parts> {
+  private _prop: Type = defaultValue
+
+  get prop() { return this._prop }
+  set prop(v) { this._prop = v; this.queueRender() }  // triggers re-render
+
+  override render(): void {
+    this.textContent = ''  // clear previous content
+    this.append(/* build new DOM */)
+  }
+}
+```
+
+**Return value:** `{ type: ComponentClass, styleSpec: { ... } }`
+
+**Style spec:** Uses `_` prefix for CSS variable definitions, camelCase for properties:
+```ts
+styleSpec: {
+  ':host': { _sfSpacing: varDefault.spacing('8px'), display: 'block' },
+  '.class': { marginBottom: vars.sfSpacing }
+}
+```
+
 ## Theming
 
 CSS custom properties with `--sf-*` prefix. Uses tosijs `varDefault()` for fallbacks.
