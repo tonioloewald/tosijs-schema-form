@@ -82,10 +82,18 @@ const getVariantLabel = (variant: JSONSchema, index: number): string => {
 const detectVariant = (value: any, variants: JSONSchema[]): number => {
   if (value === null || value === undefined) return 0
   
+  // First pass: check for exact const matches (highest priority)
+  for (let i = 0; i < variants.length; i++) {
+    const variant = variants[i]
+    if (variant.const !== undefined && value === variant.const) return i
+  }
+  
+  // Second pass: check type matches
   for (let i = 0; i < variants.length; i++) {
     const variant = variants[i]
     
-    if (variant.const !== undefined && value === variant.const) return i
+    // Skip const-only variants (already checked above)
+    if (variant.const !== undefined && !variant.type) continue
     
     const variantType = Array.isArray(variant.type) ? variant.type[0] : variant.type
     if (variantType) {
@@ -308,6 +316,28 @@ export const schemaFormBlueprint: XinBlueprint<SchemaFormParts> = (
         schema.description ? div({ class: 'description' }, schema.description) : '',
         div({ class: 'schema-union-selector-container' }, variantSelector),
         variantContent
+      )
+    }
+    
+    // Handle const (fixed value)
+    if (schema.const !== undefined) {
+      const constType = typeof schema.const === 'number' 
+        ? (Number.isInteger(schema.const) ? 'integer' : 'number')
+        : typeof schema.const
+      return div(
+        { class: 'schema-field schema-field-const' },
+        label({ for: fieldId }, fieldLabel, required ? span({ class: 'required' }, ' *') : ''),
+        schema.description ? div({ class: 'description' }, schema.description) : '',
+        input({
+          type: 'hidden',
+          id: fieldId,
+          name: path,
+          value: String(schema.const),
+          'data-path': path,
+          'data-type': constType,
+          'data-const': 'true',
+        }),
+        span({ class: 'schema-const-value' }, String(schema.const))
       )
     }
     
@@ -925,6 +955,18 @@ export const schemaFormBlueprint: XinBlueprint<SchemaFormParts> = (
       },
       '.schema-union-content': {
         paddingTop: vars.sfSpacing50,
+      },
+      '.schema-field-const': {
+        display: 'flex',
+        flexDirection: 'column',
+      },
+      '.schema-const-value': {
+        padding: `${vars.sfSpacing75} ${vars.sfSpacing}`,
+        background: `${vars.sfBrandColor}10`,
+        border: `1px solid ${vars.sfBrandColor}40`,
+        borderRadius: vars.sfSpacing50,
+        color: vars.sfBrandColor,
+        fontWeight: '500',
       },
       '.array-constraints': {
         fontSize: vars.sfFontSize85,

@@ -1,111 +1,71 @@
----
-description: Use Bun instead of Node.js, npm, pnpm, or vite.
-globs: "*.ts, *.tsx, *.html, *.css, *.js, *.jsx, package.json"
-alwaysApply: false
----
+# CLAUDE.md
 
-Default to using Bun instead of Node.js.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Use `bunx <package> <command>` instead of `npx <package> <command>`
-- Bun automatically loads .env, so don't use dotenv.
+## Project Overview
 
-## APIs
+**tosijs-schema-form** is a web component library that generates HTML forms from JSON Schema definitions. Built on the tosijs reactive component framework with zero runtime dependencies.
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+## Commands
+
+```bash
+bun install          # Install dependencies
+bun test             # Run all tests
+bun test --watch     # Run tests in watch mode
+bun run build        # Build the library to dist/
+bun run dev          # Start dev server (serve-static.ts)
+bun run demo         # Build demo and start dev server
+```
+
+## Architecture
+
+```
+src/
+├── schema-form.ts      # Public export - wraps blueprint with makeComponent()
+├── blueprint.ts        # Core implementation (~1100 lines) - framework-agnostic
+├── example-schemas.ts  # Sample schemas for demo (contact, blog, e-commerce, content builder)
+├── main.ts             # Demo app entry point
+└── schema-form.test.ts # Test suite (40+ tests using happy-dom)
+```
+
+**Key design pattern:** The blueprint function accepts a tosijs XinFactory at runtime and returns a component spec. This allows consumers to either:
+1. Import the pre-built `schemaForm` component (bundles tosijs)
+2. Import `schemaFormBlueprint` and use with their own tosijs instance
+
+**Data flow:**
+1. Set `form.schema` (JSON Schema) and optionally `form.data`
+2. `renderField()` recursively builds form elements with `data-path` attributes
+3. `form.getData()` collects inputs by path and reconstructs nested structure
+
+## Bun Preferences
+
+Use Bun instead of Node.js:
+- `bun <file>` instead of `node <file>`
+- `bun test` instead of jest/vitest
+- `bun build` instead of webpack/esbuild
+- `bun install` instead of npm/yarn/pnpm install
+- Bun auto-loads .env (no dotenv needed)
+
+For APIs, prefer Bun built-ins:
+- `Bun.serve()` with routes (not express)
+- `Bun.file()` (not node:fs readFile/writeFile)
 
 ## Testing
 
-Use `bun test` to run tests.
+Tests use `bun:test` with `@happy-dom/global-registrator` for DOM simulation. Test file: `src/schema-form.test.ts`
 
-```ts#index.test.ts
-import { test, expect } from "bun:test";
-
-test("hello world", () => {
-  expect(1).toBe(1);
-});
+```ts
+import { test, expect, beforeAll, afterEach } from 'bun:test'
 ```
 
-## Frontend
+## JSON Schema Support
 
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
+Supported: `string`, `number`, `integer`, `boolean`, `object`, `array`, `enum`, `const`, `anyOf`, `oneOf`
 
-Server:
+Validation constraints: `required`, `minLength`, `maxLength`, `minimum`, `maximum`, `pattern`
 
-```ts#index.ts
-import index from "./index.html"
+Numbers with both `minimum` and `maximum` render as range slider + number input.
 
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
-```
+## Theming
 
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
-
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
-```
-
-With the following `frontend.tsx`:
-
-```tsx#frontend.tsx
-import React from "react";
-import { createRoot } from "react-dom/client";
-
-// import .css files directly and it works
-import './index.css';
-
-const root = createRoot(document.body);
-
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
-
-root.render(<Frontend />);
-```
-
-Then, run index.ts
-
-```sh
-bun --hot ./index.ts
-```
-
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+CSS custom properties with `--sf-*` prefix. Uses tosijs `varDefault()` for fallbacks.

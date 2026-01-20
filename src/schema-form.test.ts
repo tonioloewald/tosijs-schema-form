@@ -1131,5 +1131,176 @@ describe('schema-form', () => {
       
       form.remove()
     })
+
+    test('range + const sentinel union (confidence level pattern)', async () => {
+      const form = document.createElement('schema-form') as any
+      document.body.appendChild(form)
+      
+      // Real-world pattern: confidence 0-100 OR special value 110 meaning "never confident enough"
+      form.schema = {
+        type: 'object',
+        properties: {
+          confidence: {
+            title: 'Confidence Level',
+            anyOf: [
+              { type: 'integer', title: '0-100', minimum: 0, maximum: 100 },
+              { const: 110, title: 'Never confident enough' }
+            ]
+          }
+        }
+      }
+      await nextTick()
+      
+      // Should render union with selector
+      const unionSelector = form.querySelector('.schema-union-selector') as HTMLSelectElement
+      expect(unionSelector).not.toBeNull()
+      expect(unionSelector.options.length).toBe(2)
+      expect(unionSelector.options[0].textContent).toBe('0-100')
+      expect(unionSelector.options[1].textContent).toBe('Never confident enough')
+      
+      // Default should be first variant (range)
+      expect(unionSelector.value).toBe('0')
+      
+      // Range variant should have slider
+      const rangeInput = form.querySelector('input[type="range"]') as HTMLInputElement
+      expect(rangeInput).not.toBeNull()
+      expect(rangeInput.min).toBe('0')
+      expect(rangeInput.max).toBe('100')
+      
+      // Set value and check getData
+      rangeInput.value = '75'
+      rangeInput.dispatchEvent(new Event('input', { bubbles: true }))
+      expect(form.getData()).toEqual({ confidence: 75 })
+      
+      form.remove()
+    })
+
+    test('switching to const variant returns const value', async () => {
+      const form = document.createElement('schema-form') as any
+      document.body.appendChild(form)
+      
+      form.schema = {
+        type: 'object',
+        properties: {
+          confidence: {
+            title: 'Confidence Level',
+            anyOf: [
+              { type: 'integer', title: '0-100', minimum: 0, maximum: 100 },
+              { const: 110, title: 'Never confident enough' }
+            ]
+          }
+        }
+      }
+      await nextTick()
+      
+      // Switch to const variant
+      const unionSelector = form.querySelector('.schema-union-selector') as HTMLSelectElement
+      unionSelector.value = '1'
+      unionSelector.dispatchEvent(new Event('change', { bubbles: true }))
+      await nextTick()
+      
+      // Should render const display (not editable input)
+      const constValue = form.querySelector('.schema-const-value')
+      expect(constValue).not.toBeNull()
+      expect(constValue.textContent).toBe('110')
+      
+      // Hidden input should have the const value
+      const hiddenInput = form.querySelector('input[type="hidden"]') as HTMLInputElement
+      expect(hiddenInput).not.toBeNull()
+      expect(hiddenInput.value).toBe('110')
+      expect(hiddenInput.dataset.const).toBe('true')
+      
+      // getData should return the const value as integer
+      expect(form.getData()).toEqual({ confidence: 110 })
+      
+      form.remove()
+    })
+
+    test('const variant detection with initial data', async () => {
+      const form = document.createElement('schema-form') as any
+      document.body.appendChild(form)
+      
+      form.schema = {
+        type: 'object',
+        properties: {
+          confidence: {
+            title: 'Confidence Level',
+            anyOf: [
+              { type: 'integer', title: '0-100', minimum: 0, maximum: 100 },
+              { const: 110, title: 'Never confident enough' }
+            ]
+          }
+        }
+      }
+      form.data = { confidence: 110 }
+      await nextTick()
+      
+      // Should detect const variant
+      const unionSelector = form.querySelector('.schema-union-selector') as HTMLSelectElement
+      expect(unionSelector.value).toBe('1')
+      
+      // Should show const display
+      const constValue = form.querySelector('.schema-const-value')
+      expect(constValue).not.toBeNull()
+      
+      form.remove()
+    })
+
+    test('range variant detection with initial data', async () => {
+      const form = document.createElement('schema-form') as any
+      document.body.appendChild(form)
+      
+      form.schema = {
+        type: 'object',
+        properties: {
+          confidence: {
+            title: 'Confidence Level',
+            anyOf: [
+              { type: 'integer', title: '0-100', minimum: 0, maximum: 100 },
+              { const: 110, title: 'Never confident enough' }
+            ]
+          }
+        }
+      }
+      form.data = { confidence: 42 }
+      await nextTick()
+      
+      // Should detect range variant (not const)
+      const unionSelector = form.querySelector('.schema-union-selector') as HTMLSelectElement
+      expect(unionSelector.value).toBe('0')
+      
+      // Range input should have the value
+      const rangeInput = form.querySelector('input[type="range"]') as HTMLInputElement
+      expect(rangeInput).not.toBeNull()
+      expect(rangeInput.value).toBe('42')
+      
+      form.remove()
+    })
+
+    test('standalone const schema renders correctly', async () => {
+      const form = document.createElement('schema-form') as any
+      document.body.appendChild(form)
+      
+      form.schema = {
+        type: 'object',
+        properties: {
+          version: {
+            const: '1.0.0',
+            title: 'API Version'
+          }
+        }
+      }
+      await nextTick()
+      
+      // Should render const display
+      const constValue = form.querySelector('.schema-const-value')
+      expect(constValue).not.toBeNull()
+      expect(constValue.textContent).toBe('1.0.0')
+      
+      // getData should return const value
+      expect(form.getData()).toEqual({ version: '1.0.0' })
+      
+      form.remove()
+    })
   })
 })
