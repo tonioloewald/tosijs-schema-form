@@ -18,7 +18,7 @@
     "ui"
   ],
   "author": "tonioloewald",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.3.1",
     "@types/bun": "latest"

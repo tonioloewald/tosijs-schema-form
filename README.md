@@ -229,4 +229,4 @@ This avoids bundling tosijs twice and ensures version compatibility.
 
 ## License
 
-MIT
+Copyright 2026 Tonio Loewald. Apache-2.0
